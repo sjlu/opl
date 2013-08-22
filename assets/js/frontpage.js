@@ -12,6 +12,10 @@ var Frontpage = function()
     var minutes = Math.floor(timer / 60);
     var seconds = timer % 60;
 
+    if (seconds < 10) {
+      seconds = "0" + seconds;
+    }
+
     var html = timer_template({
       minutes: minutes,
       seconds: seconds
@@ -43,12 +47,14 @@ var Frontpage = function()
   var results_template = Handlebars.compile(results_template_html);
 
   var keys_duration = {};
+  var key_presses = {};
   function show_results() {
     var results = [];
     for (var key in keys_duration) {
       var time = keys_duration[key];
       results.push({
         key: String.fromCharCode(key),
+        presses: key_presses[key], // bad, we kinda assume its there.
         seconds: time / 1000
       });
     }
@@ -67,6 +73,12 @@ var Frontpage = function()
     }
 
     keys_duration[key] += duration;
+
+    if (!key_presses[key]) {
+      key_presses[key] = 0;
+    }
+
+    key_presses[key]++;
   }
 
   function bind_keys() {
