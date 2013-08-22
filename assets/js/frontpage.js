@@ -4,6 +4,8 @@ var Frontpage = function()
 
   var interval;
   var timer = 0;
+  var total_time = 0;
+  var current_minute = 1;
 
   var timer_template_html = $('#timer-template').html();
   var timer_template = Handlebars.compile(timer_template_html);
@@ -26,12 +28,14 @@ var Frontpage = function()
 
   function set_timer(duration) {
     timer = parseInt(duration)*60;
+    total_time = timer;
 
     $('#timer').show();
     update_timer();
 
     interval = setInterval(function() {
       timer -= 1;
+
       update_timer();
 
       if (!timer) {
@@ -39,6 +43,11 @@ var Frontpage = function()
         $('#timer').hide();
         unbind_keys();
         show_results();
+        return;
+      }
+
+      if (!(timer % 60)) {
+        current_minute++;
       }
     }, 1000);
   }
@@ -46,8 +55,15 @@ var Frontpage = function()
   var results_template_html = $('#results-template').html();
   var results_template = Handlebars.compile(results_template_html);
 
+  var breakdown_template_html = $('#breakdown-template').html();
+  var breakdown_template = Handlebars.compile(breakdown_template_html);
+
   var keys_duration = {};
   var key_presses = {};
+
+  var keys_duration_by_minute = {};
+  var key_presses_by_minute = {};
+
   function show_results() {
     var results = [];
     for (var key in keys_duration) {
@@ -58,12 +74,36 @@ var Frontpage = function()
         seconds: time / 1000
       });
     }
-    console.log(results);
+
     var html = results_template({
       key_presses: results
     });
     $('#results').html(html);
     $('#results').show();
+
+    // Breakdown related stuff.
+    var breakdown = [];
+    for (var minute in keys_duration_by_minute) {
+      var minute_breakdown = [];
+      for (var key in keys_duration_by_minute[minute]) {
+        minute_breakdown.push({
+          key: String.fromCharCode(key),
+          presses: key_presses_by_minute[minute][key],
+          seconds: keys_duration_by_minute[minute][key] / 1000
+        });
+      }
+      breakdown.push({
+        minute: minute,
+        results: minute_breakdown
+      });
+    }
+
+    var html = breakdown_template({
+      results: breakdown
+    });
+
+    $('#breakdown').html(html);
+    $('#breakdown').show();
   }
 
   var current_keys_pressed = {};
@@ -79,6 +119,29 @@ var Frontpage = function()
     }
 
     key_presses[key]++;
+
+    var minute = current_minute;
+    // minute by minute action log.
+    // this is UGLY :(
+    if (!keys_duration_by_minute[minute]) {
+      keys_duration_by_minute[minute] = {};
+    }
+
+    if (!keys_duration_by_minute[minute][key]) {
+      keys_duration_by_minute[minute][key] = 0;
+    }
+
+    keys_duration_by_minute[minute][key] += duration;
+
+    if (!key_presses_by_minute[minute]) {
+      key_presses_by_minute[minute] = {};
+    }
+
+    if (!key_presses_by_minute[minute][key]) {
+      key_presses_by_minute[minute][key] = 0;
+    }
+
+    key_presses_by_minute[minute][key]++;
   }
 
   function bind_keys() {
