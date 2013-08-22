@@ -6,24 +6,55 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 
-	<title>Sunrise</title>
+	<title>Object-Place Learning (OPL)</title>
 
 	<link href="assets/style.css" rel="stylesheet" />
-
-
 </head>
 <body>
 	<div class="container">
-		<div class="hero-unit">
-			<h3>Sunrise</h3>
-			<p>A small bootstrapped, single-page, Javascript bundle to start you up!</p>
-			<a class="btn btn-primary" href="https://github.com/sjlu/sunrise">View on Github</a>
-		</div>
-	</div>
+    <center>
+      <h1>Object-Place Learning</h1>
+      <p>
+        This application simply tracks and records the duration of key-presses on the keyboard.<br />
+        To start, enter the amount of time, then press the buttons as instructed.
+      </p>
+  		<form class="form-inline" role="form" id="duration-form">
+  		  <div class="form-group">
+  		    <label class="sr-only" for="duration"></label>
+  		    <input type="duration" class="form-control input-lg" id="duration" placeholder="Duration in Minutes">
+  		  </div>
+  		  <button type="submit" class="btn btn-default btn-lg">Start</button>
+  		</form>
+      <div id="timer" style="display: none;"></div>
+      <div id="results" style="display: none;"></div>
+    </center>
+  </div>
 
-   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-   <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/0.7.0/lodash.min.js"></script>
-	<script src="assets/app.js"></script>
+  <script id="timer-template" type="text/x-handlebars-template">
+    <h3>{{minutes}} minutes, {{seconds}} seconds remaining</h3>
+  </script>
+
+  <script id="results-template" type="text/x-handlebars-template">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Duration (seconds)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#key_presses}}
+          <tr>
+            <td>{{key}}</td>
+            <td>{{seconds}}</td>
+          </tr>
+        {{/key_presses}}
+      </tbody>
+    </table>
+  </script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min.js"></script>
+  <script src="assets/app.js"></script>
 </body>
 </html>
