@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="A simple tool to track the duration of key presses.">
+	<meta name="keywords" content="object-place learning, opl, key presses">
+
+	<title>Object-Place Learning (OPL)</title>
+
+	<link href="assets/style.css" rel="stylesheet" />
+</head>
+<body>
+	<div class="container">
+    <center>
+      <h1>Object-Place Learning</h1>
+      <p>
+        This application tracks and records the number and duration of key-presses,
+        minute-by-minute, for a predetermined length of time. Designed for Otto
+        Laboratory, Rutgers University, this application is used in Object-Place
+        Learning (OPL) experiments to quantify behavioral measurements
+        (object exploration).
+      </p>
+      <p>
+        To start, enter the length of the trial, then simply press and hold keys.
+         Note: only use alphabet keys and do not switch between windows during the trial.
+      </p>
+  		<form class="form-inline" role="form" id="duration-form">
+  		  <div class="form-group">
+  		    <label class="sr-only" for="duration"></label>
+  		    <input type="duration" class="form-control input-lg" id="duration" placeholder="Duration in Minutes">
+  		  </div>
+  		  <button type="submit" class="btn btn-default btn-lg">Start</button>
+  		</form>
+      <div id="timer" style="display: none;"></div>
+      <div id="results" style="display: none;"></div>
+      <div id="breakdown" style="display: none;"></div>
+    </center>
+  </div>
+
+  <script id="timer-template" type="text/x-handlebars-template">
+    <h3>{{minutes}}:{{seconds}} remaining</h3>
+  </script>
+
+  <script id="results-template" type="text/x-handlebars-template">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Presses</th>
+          <th>Duration (in seconds)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#key_presses}}
+          <tr>
+            <td>{{key}}</td>
+            <td>{{presses}}</td>
+            <td>{{seconds}}</td>
+          </tr>
+        {{/key_presses}}
+      </tbody>
+    </table>
+  </script>
+
+  <script id="breakdown-template" type="text/x-handlebars-template">
+    <table class="table table-striped table-bordered">
+      <thead>
+        <th>Minute</th>
+        <th>Key</th>
+        <th>Presses</th>
+        <th>Duration (in seconds)</th>
+      </thead>
+      <tbody>
+        {{#results}}
+          <tr>
+            <td rowspan="{{results.length}}">{{minute}}</td>
+          {{#results}}
+              <td>{{key}}</td>
+              <td>{{presses}}</td>
+              <td>{{seconds}}</td>
+            </tr>
+            <tr>
+          {{/results}}
+          </tr>
+        {{/results}}
+      </tbody>
+    </table>
+  </script>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0/handlebars.min.js"></script>
+  <script src="assets/app.js"></script>
+  <!-- Built by Steven Lu (sjlu at me dot com) -->
+</body>
+</html>
